@@ -13,6 +13,8 @@ MCP server providing 83 tools for the GitLab REST API v4.
 - **Exceptions**: `src/mcp_gitlab/exceptions.py` — `GitLabApiError`, `GitLabAuthError`, etc.
 - **Tests**: `tests/unit/test_tools.py` — 120+ tool-level tests via FastMCP test client
 
+> Fork-specific extension rules: see AGENTS.fork.md.
+
 ## Patterns
 
 - All tools are `async def` returning JSON strings
