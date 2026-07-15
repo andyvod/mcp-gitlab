@@ -1,16 +1,18 @@
 # mcp-gitlab — Gemini CLI Extension Context
 
-MCP server providing 83 tools, 7 resources, and 6 prompts for interacting with the GitLab API. Covers the full lifecycle of GitLab projects: code, reviews, CI/CD, releases, and issue tracking.
+MCP server providing 95 tools, 7 resources, and 6 prompts for interacting with the GitLab API. Covers the full lifecycle of GitLab projects: code, reviews, CI/CD, releases, and issue tracking.
 
 ## Tool Categories
 
 - **Projects** — get, create, delete, update merge settings, share/unshare with groups
 - **Merge Requests** — list, get, create, update, merge, rebase, view changes and diffs, approve, unapprove, get approvals, list pipelines, list commits, subscribe, unsubscribe
 - **MR Reviews** — list/add/update/delete notes, list/create discussions, reply to and resolve discussions, award/remove emoji
+- **Code Review** — draft notes (create, list, publish all, delete), inline draft notes anchored to a line via search text, read raw file content
 - **MR Approvals** — project-level and MR-level approval rules (list, create, update, delete)
 - **Pipelines & Jobs** — list/get/create/retry/cancel pipelines, retry/play/cancel jobs, get job logs
 - **Branches** — list, create, delete
 - **Commits** — list, get, create, compare refs
+- **Repository** — list tree, search files by name/glob, search code, file metadata, raw file content, blob by SHA, blame
 - **Tags & Releases** — list/get/create/delete tags, list/get/create/update/delete releases
 - **CI/CD Variables** — project and group variables (list, create, update, delete)
 - **Issues** — list, get, create, update, add comments
@@ -19,6 +21,8 @@ MCP server providing 83 tools, 7 resources, and 6 prompts for interacting with t
 ## Common Workflows
 
 - **Code review**: `list_mrs` -> `mr_changes` -> `list_mr_discussions` -> `add_mr_note` or `create_mr_discussion` -> `resolve_discussion`
+- **Draft review (Submit review)**: `mr_changes` -> `create_inline_draft_note` (per finding) -> `list_draft_notes` -> `publish_draft_notes`
+- **Repository search**: `list_tree` or `search_file` -> `get_file_content` / `get_blob` -> `search_blame`
 - **Pipeline debugging**: `list_pipelines` -> `get_pipeline` -> `get_job_log` -> `retry_job`
 - **Release process**: `list_commits` -> `compare` -> `create_tag` -> `create_release`
 - **Branch protection**: `list_project_approval_rules` -> `create_project_approval_rule` -> `update_project_merge_settings`

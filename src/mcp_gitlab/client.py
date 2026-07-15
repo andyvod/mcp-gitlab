@@ -365,6 +365,36 @@ class GitLabClient:
             f"{self._mr_path(project_id, mr_iid)}/notes/{note_id}/award_emoji/{award_id}"
         )
 
+    # -- MR Draft Notes ------------------------------------------------
+
+    async def list_draft_notes(self, project_id: str | int, mr_iid: int) -> list[dict]:
+        return await self.get(
+            f"{self._mr_path(project_id, mr_iid)}/draft_notes",
+            params={"per_page": 100},
+        )
+
+    async def create_draft_note(
+        self, project_id: str | int, mr_iid: int, payload: dict[str, Any]
+    ) -> dict:
+        return await self.post(f"{self._mr_path(project_id, mr_iid)}/draft_notes", payload)
+
+    async def delete_draft_note(
+        self, project_id: str | int, mr_iid: int, draft_note_id: int
+    ) -> None:
+        await self.delete(
+            f"{self._mr_path(project_id, mr_iid)}/draft_notes/{draft_note_id}"
+        )
+
+    async def publish_draft_note(
+        self, project_id: str | int, mr_iid: int, draft_note_id: int
+    ) -> dict:
+        return await self.put(
+            f"{self._mr_path(project_id, mr_iid)}/draft_notes/{draft_note_id}/publish"
+        )
+
+    async def bulk_publish_draft_notes(self, project_id: str | int, mr_iid: int) -> None:
+        await self.post(f"{self._mr_path(project_id, mr_iid)}/draft_notes/bulk_publish")
+
     # ── MR Discussions ────────────────────────────────────────────
 
     async def list_mr_discussions(self, project_id: str | int, mr_iid: int) -> list[dict]:
@@ -488,6 +518,19 @@ class GitLabClient:
         enc = self._encode_id(project_id)
         return await self.get(
             f"/projects/{enc}/jobs/{job_id}/trace",
+            raw=True,
+        )
+
+    # -- Repository files ----------------------------------------------
+
+    async def get_file_raw(
+        self, project_id: str | int, file_path: str, ref: str = "master"
+    ) -> str:
+        enc = self._encode_id(project_id)
+        encoded_path = quote(file_path, safe="")
+        return await self.get(
+            f"/projects/{enc}/repository/files/{encoded_path}/raw",
+            params={"ref": ref},
             raw=True,
         )
 

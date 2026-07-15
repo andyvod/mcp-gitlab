@@ -43,7 +43,7 @@ def main(
         format="%(name)s | %(message)s",
     )
 
-    from .servers import prompts, resources  # noqa: F401 — registers decorators
+    from .servers import prompts, repository, resources, review  # noqa: F401 — registers decorators
     from .servers.gitlab import mcp
 
     run_kwargs: dict = {"transport": transport}
