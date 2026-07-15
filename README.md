@@ -9,7 +9,7 @@
 
 <!-- mcp-name: io.github.vish288/mcp-gitlab -->
 
-**mcp-gitlab** is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for the GitLab REST API that provides **83 tools**, **7 resources**, and **6 prompts** for AI assistants to manage projects, merge requests, pipelines, CI/CD variables, approvals, issues, code reviews, and more. Works with Claude Desktop, Claude Code, Cursor, Windsurf, VS Code Copilot, and any MCP-compatible client.
+**mcp-gitlab** is a [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for the GitLab REST API that provides **95 tools**, **7 resources**, and **6 prompts** for AI assistants to manage projects, merge requests, pipelines, CI/CD variables, approvals, issues, code reviews, and more. Works with Claude Desktop, Claude Code, Cursor, Windsurf, VS Code Copilot, and any MCP-compatible client.
 
 Supports GitLab.com and self-hosted GitLab instances (CE/EE). No GitLab Duo or Premium required.
 
@@ -111,7 +111,7 @@ These accept any of the following token types:
 | Windsurf | Yes | `~/.codeium/windsurf/mcp_config.json` |
 | Any MCP client | Yes | stdio or HTTP transport |
 
-## Tools (83)
+## Tools (95)
 
 | Category | Count | Tools |
 |----------|-------|-------|
@@ -120,7 +120,7 @@ These accept any of the following token types:
 | **Groups** | 6 | list, get, share/unshare project, share/unshare group |
 | **Branches** | 3 | list, create, delete |
 | **Commits** | 4 | list, get (with diff), create, compare |
-| **Merge Requests** | 16 | list, get, create, update, merge, merge-sequence, rebase, changes, approve, unapprove, get approvals, list reviewers, list pipelines, list commits, subscribe, unsubscribe |
+| **Merge Requests** | 15 | list, get, create, update, merge, merge-sequence, rebase, changes, approve, unapprove, get approvals, list pipelines, list commits, subscribe, unsubscribe |
 | **MR Notes** | 6 | list, add, delete, update, award emoji, remove emoji |
 | **MR Discussions** | 4 | list, create (inline + multi-line), reply, resolve |
 | **Pipelines** | 5 | list, get (with jobs), create, retry, cancel |
@@ -129,6 +129,8 @@ These accept any of the following token types:
 | **Releases** | 5 | list, get, create, update, delete |
 | **CI/CD Variables** | 8 | CRUD for project variables, CRUD for group variables |
 | **Issues** | 5 | list, get, create, update, add comment |
+| **Repository** | 6 | list tree, search file, search code, file metadata, blob, blame |
+| **Code Review** | 6 | draft notes (create, list, publish, delete), inline draft notes, raw file content |
 
 <details>
 <summary>Full tool reference (click to expand)</summary>
@@ -180,6 +182,16 @@ These accept any of the following token types:
 | `gitlab_create_commit` | Create commit with file actions |
 | `gitlab_compare` | Compare branches/tags/commits |
 
+### Repository
+| Tool | Description |
+|------|-------------|
+| `gitlab_list_tree` | List repository tree entries (files and dirs) for any ref |
+| `gitlab_search_file` | Find files by name/glob across any ref (incl. tags and SHAs) |
+| `gitlab_search_code` | Search file contents via GitLab project search (scope=blobs) |
+| `gitlab_get_file_metadata` | Get a file's metadata (blob id, size, sha256) without content |
+| `gitlab_get_blob` | Get raw blob content by its SHA as plain text |
+| `gitlab_search_blame` | Get blame (per-line commit attribution) for a file at a ref |
+
 ### Merge Requests
 | Tool | Description |
 |------|-------------|
@@ -216,6 +228,16 @@ These accept any of the following token types:
 | `gitlab_create_mr_discussion` | Create discussion (inline + multi-line) |
 | `gitlab_reply_to_discussion` | Reply to discussion |
 | `gitlab_resolve_discussion` | Resolve/unresolve discussion |
+
+### Code Review
+| Tool | Description |
+|------|-------------|
+| `gitlab_create_draft_note` | Create a draft note on a MR (invisible until published) |
+| `gitlab_list_draft_notes` | List all draft notes for a merge request (not yet published) |
+| `gitlab_publish_draft_notes` | Publish ALL draft notes at once (equivalent to "Submit review") |
+| `gitlab_delete_draft_note` | Delete a single draft note by ID |
+| `gitlab_create_inline_draft_note` | Create a draft note anchored to a line, resolved by search text |
+| `gitlab_get_file_content` | Get raw file content from a GitLab repository |
 
 ### Pipelines
 | Tool | Description |
@@ -325,6 +347,11 @@ The server provides [MCP prompts](https://modelcontextprotocol.io/docs/concepts/
 "Review MR !42 — list changes and add inline comments"
 → gitlab_mr_changes(project_id="123", mr_iid=42)
 → gitlab_create_mr_discussion(project_id="123", mr_iid=42, body="nit: ...", new_path="src/auth.py", new_line=15)
+
+"Stage a review on MR !42 — add inline draft notes, then publish all at once"
+→ gitlab_create_inline_draft_note(project_id="123", mr_iid=42, body="blocking: handle None", file_path="src/auth.py", search_text="def login")
+→ gitlab_list_draft_notes(project_id="123", mr_iid=42) → review the drafts
+→ gitlab_publish_draft_notes(project_id="123", mr_iid=42)
 
 "Merge MR !42 after resolving all threads"
 → gitlab_list_mr_discussions(project_id="123", mr_iid=42) → resolve unresolved

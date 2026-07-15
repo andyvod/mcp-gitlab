@@ -1,14 +1,15 @@
 # mcp-gitlab — Agent Context
 
-MCP server providing 83 tools for the GitLab REST API v4.
+MCP server providing 95 tools for the GitLab REST API v4.
 
 ## Architecture
 
 - **Entry point**: `src/mcp_gitlab/__init__.py` — click CLI, loads env, runs FastMCP server
 - **Client**: `src/mcp_gitlab/client.py` — async httpx client with all GitLab API methods
-- **Tools**: `src/mcp_gitlab/servers/gitlab.py` — all FastMCP tool registrations
-- **Resources**: `src/mcp_gitlab/servers/resources.py` — 6 MCP resources (workflow guides)
-- **Prompts**: `src/mcp_gitlab/servers/prompts.py` — 5 MCP prompts (multi-tool workflows)
+- **Tools**: `src/mcp_gitlab/servers/gitlab.py` — core FastMCP tool registrations (83 tools)
+- **Tools (fork extensions)**: `src/mcp_gitlab/servers/repository.py` (6 repo-nav tools) and `src/mcp_gitlab/servers/review.py` (6 code-review tools), registered against the shared `mcp` instance
+- **Resources**: `src/mcp_gitlab/servers/resources.py` — 7 MCP resources (workflow guides)
+- **Prompts**: `src/mcp_gitlab/servers/prompts.py` — 6 MCP prompts (multi-tool workflows)
 - **Config**: `src/mcp_gitlab/config.py` — `GitLabConfig` dataclass from env vars
 - **Exceptions**: `src/mcp_gitlab/exceptions.py` — `GitLabApiError`, `GitLabAuthError`, etc.
 - **Tests**: `tests/unit/test_tools.py` — 120+ tool-level tests via FastMCP test client
@@ -60,7 +61,7 @@ Every tool MUST have `annotations={}` with at minimum `readOnlyHint`.
 
 ## Tool Categories
 
-Projects (4), Approvals (10), Groups (6), Branches (3), Commits (4), Merge Requests (15), MR Notes (6), MR Discussions (4), Pipelines (5), Jobs (4), Tags (4), Releases (5), CI/CD Variables (8), Issues (5)
+Projects (4), Approvals (10), Groups (6), Branches (3), Commits (4), Merge Requests (15), MR Notes (6), MR Discussions (4), Pipelines (5), Jobs (4), Tags (4), Releases (5), CI/CD Variables (8), Issues (5), Repository (6), Code Review (6)
 
 ## Environment Variables
 
@@ -102,6 +103,7 @@ gh workflow run release.yml -f bump=minor -f dry_run=true
 Prompts follow the resources pattern: prompt content lives as `.md` files in `src/mcp_gitlab/resources/prompts/`, loaded by `servers/prompts.py` via `_load_prompt()`, registered with `@mcp.prompt()`. Each prompt returns `list[Message]` with a user message (workflow template) and an assistant message (acknowledgment).
 
 - `review_mr` — MR review workflow (tags: gitlab, review)
+- `approve_mr` — MR approval workflow (tags: gitlab, review)
 - `diagnose_pipeline` — CI debug workflow (tags: gitlab, ci)
 - `prepare_release` — Release preparation (tags: gitlab, release)
 - `setup_branch_protection` — Branch protection setup (tags: gitlab, settings)
@@ -122,5 +124,5 @@ Checklist: verify tool count matches actual registered tools, verify category li
 
 ## Known Limitations / Future Work
 
-- 83 tools in one server file (exceeds 5-15 guideline). Consider splitting by category in a future refactor.
+- `gitlab.py` holds 83 tools in one file (exceeds the 5-15 guideline); `repository.py` (6) and `review.py` (6) were split off as fork extensions. Consider further splitting `gitlab.py` by category in a future refactor.
 - Errors are returned as successful tool results with `{"error": ...}` (soft-error pattern). Callers must inspect JSON content.

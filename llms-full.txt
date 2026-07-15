@@ -1,6 +1,6 @@
 # mcp-gitlab
 
-> MCP server for the GitLab REST API — 83 tools, 7 resources, and 6 prompts for managing projects, merge requests, pipelines, CI/CD, approvals, issues, and code reviews.
+> MCP server for the GitLab REST API — 95 tools, 7 resources, and 6 prompts for managing projects, merge requests, pipelines, CI/CD, approvals, issues, and code reviews.
 
 MCP server that wraps the GitLab REST API. Works with GitLab.com and self-hosted instances (CE/EE). No GitLab Duo or Premium required. Built with FastMCP, httpx, and Pydantic.
 
@@ -15,7 +15,7 @@ MCP server that wraps the GitLab REST API. Works with GitLab.com and self-hosted
 
 ## Documentation
 
-- [README](https://github.com/vish288/mcp-gitlab#readme): canonical reference for setup, env vars, all 83 tools, 7 resources, 6 prompts
+- [README](https://github.com/vish288/mcp-gitlab#readme): canonical reference for setup, env vars, all 95 tools, 7 resources, 6 prompts
 - [PyPI](https://pypi.org/project/mcp-gitlab/): install via `pip install mcp-gitlab` or `uvx mcp-gitlab`
 - [GitHub](https://github.com/vish288/mcp-gitlab): source code, issue tracker, development setup
 - [MCP Registry](https://registry.modelcontextprotocol.io): discover and install MCP servers
@@ -79,7 +79,7 @@ uvx mcp-gitlab --gitlab-url https://gitlab.example.com --gitlab-token glpat-xxx 
 | Delete projects, manage approval rules | Maintainer/Owner |
 | Share projects/groups | Owner (or Admin) |
 
-## Tools (83)
+## Tools (95)
 
 ### Projects (4)
 
@@ -133,7 +133,18 @@ uvx mcp-gitlab --gitlab-url https://gitlab.example.com --gitlab-token glpat-xxx 
 | `gitlab_create_commit` | Create a commit with multiple file actions |
 | `gitlab_compare` | Compare two branches, tags, or commits |
 
-### Merge Requests (16)
+### Repository (6)
+
+| Tool | Description |
+|------|-------------|
+| `gitlab_list_tree` | List repository tree entries (files and dirs) for any ref |
+| `gitlab_search_file` | Find files by name/glob across any ref, including tags and SHAs |
+| `gitlab_search_code` | Search file contents via GitLab project search (scope=blobs); without Advanced Search only the default branch is covered |
+| `gitlab_get_file_metadata` | Get a file's metadata (blob id, size, sha256) without its content |
+| `gitlab_get_blob` | Get raw blob content by its SHA as plain text |
+| `gitlab_search_blame` | Get blame (per-line commit attribution) for a file at a ref |
+
+### Merge Requests (15)
 
 | Tool | Description |
 |------|-------------|
@@ -172,6 +183,17 @@ uvx mcp-gitlab --gitlab-url https://gitlab.example.com --gitlab-token glpat-xxx 
 | `gitlab_create_mr_discussion` | Create a discussion on a merge request (supports inline and multi-line comments) |
 | `gitlab_reply_to_discussion` | Reply to an existing discussion |
 | `gitlab_resolve_discussion` | Resolve or unresolve a discussion |
+
+### Code Review (6)
+
+| Tool | Description |
+|------|-------------|
+| `gitlab_create_draft_note` | Create a draft note on a merge request (invisible until published) |
+| `gitlab_list_draft_notes` | List all draft notes for a merge request (not yet published) |
+| `gitlab_publish_draft_notes` | Publish ALL draft notes at once (equivalent to "Submit review" in GitLab UI) |
+| `gitlab_delete_draft_note` | Delete a single draft note by ID |
+| `gitlab_create_inline_draft_note` | Create a draft note anchored to a specific line; line resolved automatically by searching for a text fragment in the diff |
+| `gitlab_get_file_content` | Get raw file content from a GitLab repository (not JSON) |
 
 ### Pipelines (5)
 
@@ -234,7 +256,7 @@ uvx mcp-gitlab --gitlab-url https://gitlab.example.com --gitlab-token glpat-xxx 
 | `gitlab_update_issue` | Update an existing issue |
 | `gitlab_add_issue_comment` | Add a comment to an issue |
 
-## Resources (6)
+## Resources (7)
 
 The server exposes curated workflow guides as MCP resources that clients can read on demand.
 
