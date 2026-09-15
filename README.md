@@ -236,7 +236,7 @@ These accept any of the following token types:
 | `gitlab_list_draft_notes` | List all draft notes for a merge request (not yet published) |
 | `gitlab_publish_draft_notes` | Publish ALL draft notes at once (equivalent to "Submit review") |
 | `gitlab_delete_draft_note` | Delete a single draft note by ID |
-| `gitlab_create_inline_draft_note` | Create a draft note anchored to a line, resolved by search text |
+| `gitlab_create_inline_draft_note` | Create a draft note anchored to a line or line range; anchors by line number (`start_line`/`end_line`) or text fragment (`search_text`) |
 | `gitlab_get_file_content` | Get raw file content from a GitLab repository |
 
 ### Pipelines
@@ -349,7 +349,8 @@ The server provides [MCP prompts](https://modelcontextprotocol.io/docs/concepts/
 → gitlab_create_mr_discussion(project_id="123", mr_iid=42, body="nit: ...", new_path="src/auth.py", new_line=15)
 
 "Stage a review on MR !42 — add inline draft notes, then publish all at once"
-→ gitlab_create_inline_draft_note(project_id="123", mr_iid=42, body="blocking: handle None", file_path="src/auth.py", search_text="def login")
+→ gitlab_create_inline_draft_note(project_id="123", mr_iid=42, body="blocking: handle None", file_path="src/auth.py", start_line=15)
+→ gitlab_create_inline_draft_note(project_id="123", mr_iid=42, body="range comment", file_path="src/auth.py", start_line=15, end_line=30)
 → gitlab_list_draft_notes(project_id="123", mr_iid=42) → review the drafts
 → gitlab_publish_draft_notes(project_id="123", mr_iid=42)
 

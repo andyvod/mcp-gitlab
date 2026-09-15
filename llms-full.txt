@@ -192,7 +192,7 @@ uvx mcp-gitlab --gitlab-url https://gitlab.example.com --gitlab-token glpat-xxx 
 | `gitlab_list_draft_notes` | List all draft notes for a merge request (not yet published) |
 | `gitlab_publish_draft_notes` | Publish ALL draft notes at once (equivalent to "Submit review" in GitLab UI) |
 | `gitlab_delete_draft_note` | Delete a single draft note by ID |
-| `gitlab_create_inline_draft_note` | Create a draft note anchored to a specific line; line resolved automatically by searching for a text fragment in the diff |
+| `gitlab_create_inline_draft_note` | Create a draft note anchored to a line or line range; anchor by `start_line`/`end_line` (new-file numbering, old side resolved automatically) or by a text fragment (`search_text`, `side="old"` for removed lines) |
 | `gitlab_get_file_content` | Get raw file content from a GitLab repository (not JSON) |
 
 ### Pipelines (5)
